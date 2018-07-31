@@ -27,7 +27,8 @@ import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
 /**
- *
+ * Notes: (n/8)-2*ceil(h/8)-2 is the max data size (in bytes) that can be encrypted with the cipher settings RSA/ECB/OAEPWithSHA-256AndMGF1Padding
+ * therefore here in this PoC the maximum binary message per encrypt is approximately ~446bytes
  * @author fbdl
  */
 public class Main {
@@ -55,10 +56,11 @@ public class Main {
         //encrypt
         System.out.println("Encrypting: Hello World");
         String plainText = "Hello World";
+        System.out.println("size: " + plainText.getBytes().length);
         Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-512AndMGF1Padding");
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         
-        cipher.update(plainText.getBytes());
+        cipher.update(plainText.getBytes("UTF-8")); //we restrict to specifically set a recommended unicode encoding scheme
         byte[] result = cipher.doFinal();
         
         String ciphertext = Base64.getEncoder().encodeToString(result);
@@ -71,7 +73,7 @@ public class Main {
         decryptCipher.update(Base64.getDecoder().decode(ciphertext));
         byte[] decrypted = decryptCipher.doFinal();
         
-        System.out.println("word is: " + new String(decrypted));
+        System.out.println("word is: " + new String(decrypted, "UTF-8"));
         
         
     }
