@@ -34,6 +34,7 @@ public class Main {
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
         System.out.println("fbdl");
         
+        //TODO: replace with vanilla base64 decoder or bouncycastle
         ///////////////////// can be replaced by BouncyCastle READPEM
         //load files
         File privateFile = new File("/home/fbdl/Desktop/VBXShared/keys/private_key.pem");
@@ -58,35 +59,35 @@ public class Main {
         String pubFull = new String(publicKeyBytes);
         String publicKeyPEM = pubFull.replace("-----BEGIN PUBLIC KEY-----", "");
         publicKeyPEM = publicKeyPEM.replace("-----END PUBLIC KEY-----", "");
+       
         //clear off old bytes after here.
         
-       
-        //TODO: replace with vanilla base64 decoder or bouncycastle
+        
         PrivateKey privateKey = KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(new BASE64Decoder().decodeBuffer(privateKeyPEM)));
         PublicKey publicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(new BASE64Decoder().decodeBuffer(publicKeyPEM)));
         ///////////////////////////////
         
         
+        //encrypt
         System.out.println("Encrypting: Hello World");
         String plainText = "Hello World";
         Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-512AndMGF1Padding");
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         
-        cipher.update(plainText.getBytes("UTF-8"));
+        cipher.update(plainText.getBytes());
         byte[] result = cipher.doFinal();
         
-        String encryptResult = new String(result, "UTF-8");
+        String encryptResult = Base64.getEncoder().encodeToString(result);
         System.out.println("encrypted string: " + encryptResult);
         
-        
+        //decrypt
         System.out.println("Decrypting...");
         Cipher decryptCipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-512AndMGF1Padding");
         decryptCipher.init(Cipher.DECRYPT_MODE, privateKey);
-        //yung byte or string ba dapat?
-        decryptCipher.update(result);
+        decryptCipher.update(Base64.getDecoder().decode(encryptResult));
         byte[] decrypted = decryptCipher.doFinal();
         
-        System.out.println("word is: " + new String(decrypted, "UTF-8"));
+        System.out.println("word is: " + new String(decrypted));
         
         
     }
