@@ -28,7 +28,14 @@ import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 
 /**
  * Notes: (n/8)-2*ceil(h/8)-2 is the max data size (in bytes) that can be encrypted with the cipher settings RSA/ECB/OAEPWithSHA-256AndMGF1Padding
- * therefore here in this PoC the maximum binary message per encrypt is approximately ~446bytes
+ * therefore here in this PoC the maximum binary message per encrypt is approximately ~446bytes.
+ * 
+ * Algorithm: RSA
+ * Mode: ECB //supposedly none but ECB is needed to get Java to work. Nonesense because RSA is not a block cipher.
+ * Padding: OAEPWithSHA-512AndMGF1padding //to have high level of randomness and padidng
+ * Key size: 4096
+ * https://www.javacodegeeks.com/2017/12/choosing-java-cryptographic-algorithms-part-3-public-private-key-asymmetric-encryption.html
+ * 
  * @author fbdl
  */
 public class Main {
@@ -57,7 +64,7 @@ public class Main {
         System.out.println("Encrypting: Hello World");
         String plainText = "Hello World";
         System.out.println("size: " + plainText.getBytes().length);
-        Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-512AndMGF1Padding");
+        Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
         cipher.init(Cipher.ENCRYPT_MODE, publicKey);
         
         cipher.update(plainText.getBytes("UTF-8")); //we restrict to specifically set a recommended unicode encoding scheme
@@ -68,7 +75,7 @@ public class Main {
         
         //decrypt
         System.out.println("Decrypting...");
-        Cipher decryptCipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-512AndMGF1Padding");
+        Cipher decryptCipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
         decryptCipher.init(Cipher.DECRYPT_MODE, privateKey);
         decryptCipher.update(Base64.getDecoder().decode(ciphertext));
         byte[] decrypted = decryptCipher.doFinal();
