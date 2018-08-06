@@ -8,6 +8,7 @@ package com.fbdl.crypto.fbdlcrypto.cmp;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
@@ -207,11 +208,12 @@ public class Main {
             System.out.println("cert: " + new String(cert.getEncoded()).toLowerCase());
             
             StringWriter writer = new StringWriter();
-            JcaPEMWriter pemWriter = new JcaPEMWriter(writer);
+            FileWriter fWriter = new FileWriter("/home/fbdl/Desktop/myInsta/deployment/fbdl.pem");
+            JcaPEMWriter pemWriter = new JcaPEMWriter(fWriter);
             pemWriter.writeObject(cert);
             pemWriter.flush();
             pemWriter.close();
-            System.out.println("content: " + writer.toString());
+//            System.out.println("content: " + writer.toString());
             
             EntityUtils.consume(entity1);
         } finally {
