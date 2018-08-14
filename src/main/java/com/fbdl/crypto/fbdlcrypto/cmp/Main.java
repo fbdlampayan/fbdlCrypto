@@ -77,7 +77,7 @@ public class Main {
     public static void main(String[] args) throws PEMException, IOException, CRMFException, CMPException, OperatorCreationException, CertificateException {
         System.out.println("cmp-client!");
         
-        //loading public and private
+        //loading public and private keys into Java Objects
         final Provider bcProvider = new BouncyCastleProvider();
         Security.addProvider(bcProvider);
         
@@ -94,7 +94,7 @@ public class Main {
         PrivateKey privateKey = converter.getPrivateKey(privateKeyInfo);
         PublicKey publicKey = converter.getPublicKey(subjectPublicKeyInfo);
         
-        //target CA and Client's CN
+        //declare CN of target CA and Client's CN
         X509NameEntryConverter dnConverter = new X509DefaultEntryConverter();
         X500Name issuerDN = X500Name.getInstance(new X509Name("C=FI, ST=Finland, O=Nokia, CN=Nokia Digital Automation Sub CA").toASN1Object());
         X500Name subjectDN = X500Name.getInstance(new X509Name("C=FI,CN=Mashiro", dnConverter).toASN1Object());
@@ -160,7 +160,7 @@ public class Main {
 //        ContentSigner msgSigner = new JcaContentSignerBuilder("sha1WithRSAEncryption").setProvider("BC").build(privateKey);
         ProtectedPKIMessage m = pbuilder.build(macCalculator);
         
-        String url = "http://10.0.0.52:8888/pkix/"; //k8s service
+        String url = "http://cmp.insta.ci-dev2.daaas.dynamic.nsn-net.net/pkix/"; //k8s service
         
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost post = new HttpPost(url);
