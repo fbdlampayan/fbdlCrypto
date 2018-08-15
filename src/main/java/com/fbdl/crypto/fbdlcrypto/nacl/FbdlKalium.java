@@ -50,6 +50,8 @@ public class FbdlKalium {
         byte[] secret = pandora.decrypt(nonce, result);
         
         System.out.println("decrypted: " + new String(secret));
+        
+        
     }
     
 }

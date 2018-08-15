@@ -32,7 +32,7 @@ import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
  * 
  * Algorithm: RSA
  * Mode: ECB //supposedly none but ECB is needed to get Java to work. Nonesense because RSA is not a block cipher.
- * Padding: OAEPWithSHA-512AndMGF1padding //to have high level of randomness and padidng
+ * Padding: OAEPWithSHA-256AndMGF1padding //to have high level of randomness and padidng
  * Key size: 4096
  * https://www.javacodegeeks.com/2017/12/choosing-java-cryptographic-algorithms-part-3-public-private-key-asymmetric-encryption.html
  * 
@@ -61,7 +61,7 @@ public class Main {
         
         
         //encrypt
-        System.out.println("Encrypting: Hello World");
+        System.out.println("Encrypting...");
         String plainText = "Hello World";
         System.out.println("size: " + plainText.getBytes().length);
         Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-256AndMGF1Padding");
